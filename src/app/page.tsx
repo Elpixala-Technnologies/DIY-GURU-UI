@@ -1,33 +1,33 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { dashboard } from "@/data/dashboard";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Tab from "@/components/tabFilteration/Tab";
 import TabContent from "@/components/tabFilteration/TabContent";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { CiLogout, CiSettings } from "react-icons/ci";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from 'next/navigation'
+import { dashboard } from "@/data/dashboard";
 
-export default function Dashboard() {
+function Dashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
 
-  const searchParams = useSearchParams()
- 
-  const tab = searchParams.get('tab')
-
-  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [activeTab, setActiveTab] = useState(tab || "Dashboard");
 
   useEffect(() => {
-    if (tab && dashboard.tabs.some((t) => t.label === tab)) {
+    if (
+      tab &&
+      tab !== activeTab &&
+      dashboard.tabs.some((t) => t.label === tab)
+    ) {
       setActiveTab(tab);
-      router.push(`/?tab=${tab}`);
     }
-  }, [tab]);
+  }, [tab, activeTab]);
 
-  const handleTabClick = (tabLabel:any) => {
+  const handleTabClick = (tabLabel: any) => {
     setActiveTab(tabLabel);
-    router.push(`/?tab=${tabLabel}`);
+    router.push(`/?tab=${encodeURIComponent(tabLabel)}`);
   };
 
   return (
@@ -67,15 +67,22 @@ export default function Dashboard() {
       </aside>
       {/* Tab Content */}
       <main className="col-span-10 max-h-screen overflow-y-scroll p-5 sm:p-10 max-sm:col-span-12">
-        {dashboard?.tabs.map(
-          (tab) =>
-            tab?.label === activeTab && (
-              <React.Fragment key={tab?.id}>
-                <TabContent activeTab={tab} />
-              </React.Fragment>
-            )
+        {dashboard?.tabs.map((tab) =>
+          tab?.label === activeTab ? (
+            <React.Fragment key={tab?.id}>
+              <TabContent activeTab={tab} />
+            </React.Fragment>
+          ) : null
         )}
       </main>
     </section>
+  );
+}
+
+export default function page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Dashboard />
+    </Suspense>
   );
 }

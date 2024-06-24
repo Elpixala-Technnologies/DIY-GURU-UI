@@ -193,7 +193,7 @@ export default function AdminDashboard({ tab }: any) {
               {/* Title  */}
               <div className="flex w-full justify-between">
                 <h6 className="mb-3 text-xl">Report & Analytics</h6>
-                <button onClick={() => router.push('/?tab=Report & Analytics')} className="hover:underline">
+                <button onClick={() => router.push(`/?tab=${encodeURIComponent('Report & Analytics')}`)} className="hover:underline">
                   See All
                 </button>
               </div>
