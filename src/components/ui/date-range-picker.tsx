@@ -539,6 +539,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             Cancel
           </Button>
           <Button
+           className='text-white'
             onClick={() => {
               setIsOpen(false)
               if (

@@ -82,6 +82,13 @@ export const dashboard = {
             href: "#",
             isPopular: false,
           },
+          {
+            id: "5",
+            title: "Data Sciences",
+            icon: <FaChartPie />,
+            href: "#",
+            isPopular: false,
+          },
         ],
         staff: [
           {

@@ -30,7 +30,7 @@ import {
   IoHelpCircleOutline,
   IoPeople,
 } from "react-icons/io5";
-import { GoBell } from "react-icons/go";
+import { GoBell, GoDownload, GoPlus } from "react-icons/go";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -39,10 +39,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
-import { MdArrowOutward } from "react-icons/md";
+import { MdArrowOutward, MdOutlineFileDownload } from "react-icons/md";
 import { HiCursorClick } from "react-icons/hi";
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsFilterLeft, BsThreeDotsVertical } from "react-icons/bs";
 import { SlBookOpen } from "react-icons/sl";
 import { Button } from "../ui/button";
 import classNames from "classnames";
@@ -50,15 +50,37 @@ import { CiSettings } from "react-icons/ci";
 import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
 import { DateRangePicker } from "../ui/date-range-picker";
+import { useRouter } from "next/navigation";
 
 export default function AdminDashboard({ tab }: any) {
+  const router = useRouter();
   function handleSearch() {
     // search operation
   }
+
+  // Courses To Show 
+  const [showAllCourses, setShowAllCourses] = useState(false);
+
+  const handleCoursesSeeAllClick = () => {
+    setShowAllCourses(!showAllCourses);
+  };
+
+  const coursesToShow = showAllCourses ? tab?.content?.courses : tab?.content?.courses?.slice(0, 4);
+
+  // Staff To Show 
+  const [showAllStaff, setShowAllStaff] = useState(false);
+
+  const handleStaffSeeAllClick = () => {
+    setShowAllStaff(!showAllStaff);
+  };
+
+  const StaffToShow = showAllStaff ? tab?.content?.staff : tab?.content?.staff?.slice(0, 4);
+
   return (
     <>
       {/* Title and Search Section  */}
-      <div className="flex w-full justify-between pb-6">
+      <div className="flex flex-wrap gap-5 w-full justify-between pb-6">
+        {/* Left Side  */}
         <div>
           {tab?.content?.title && (
             <h2 className="text-xl">{tab?.content?.title}</h2>
@@ -67,7 +89,8 @@ export default function AdminDashboard({ tab }: any) {
             <p className="text-sm text-zinc-600">{tab?.content?.subtitle}</p>
           )}
         </div>
-        <div className="flex gap-3">
+        {/* Right Side  */}
+        <div className="flex gap-1 sm:gap-3">
           <div className="relative flex h-10 cursor-pointer items-center rounded-xl border-2 border-foreground/15 bg-white px-2">
             <div className="absolute right-1 top-2">
               <p className="flex h-2 w-2 items-center justify-center rounded-full border-2 border-white bg-red-500 p-1 text-xs text-white"></p>
@@ -86,7 +109,7 @@ export default function AdminDashboard({ tab }: any) {
           {/* Search Bar  */}
           <div className="flex h-10 max-w-56 items-center rounded-xl border-2 border-foreground/15 bg-white px-5 pr-3">
             <input
-              className="w-full focus:outline-none max-md:p-3"
+              className="w-full h-fit focus:outline-none"
               type="text"
               placeholder="Search here..."
               onChange={handleSearch}
@@ -101,9 +124,10 @@ export default function AdminDashboard({ tab }: any) {
         </div>
       </div>
       <div className="grid grid-cols-12">
-        <div className="col-span-9 pr-5">
+        <div className="col-span-9 sm:pr-5 max-xl:col-span-12">
           {/* Section 0 - Filter Section  */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 overflow-y-auto mb-5">
+            {/* Date Picker  */}
             <DateRangePicker
               onUpdate={(values) => console.log(values)}
               initialDateFrom="2024-06-1"
@@ -112,11 +136,28 @@ export default function AdminDashboard({ tab }: any) {
               locale="en-GB"
               showCompare={true}
             />
+            {/* Download Report */}
+            <Button
+              variant="outline"
+              className="rounded-full border-2 bg-white text-black"
+            >
+              <GoDownload className="mr-1 text-lg" />
+              Download Report
+            </Button>
+            {/* Add widget  */}
+            <Button
+              variant="outline"
+              className="rounded-full border-2 bg-white text-black"
+            >
+              <GoPlus className="mr-1 text-lg" />
+              Add widget
+            </Button>
+            {/* Filter  */}
+            <Filter />
           </div>
-
           {/* section 1 - Overview */}
           <h2 className="mb-3 text-xl">Overview</h2>
-          <div className="flex justify-between gap-5">
+          <div className="flex gap-5 w-full overflow-x-auto">
             <Card
               icon={<PiStudentBold />}
               iconBgColor="bg-purple-400"
@@ -149,14 +190,15 @@ export default function AdminDashboard({ tab }: any) {
           {/* Section 2 - Report & Analytics  */}
           <div className="my-5">
             <div className="flex justify-between">
+              {/* Title  */}
               <div className="flex w-full justify-between">
                 <h6 className="mb-3 text-xl">Report & Analytics</h6>
-                <Link href="#" className="hover:underline">
+                <button onClick={() => router.push('/?tab=Report & Analytics')} className="hover:underline">
                   See All
-                </Link>
+                </button>
               </div>
             </div>
-            <div className="grid grid-cols-10 gap-5">
+            <div className="sm:grid grid-cols-10 gap-5">
               {/* ProgressBar  */}
               <StudentEngagement data={tab?.content?.studentEngagement} />
               {/* Chart  */}
@@ -169,26 +211,29 @@ export default function AdminDashboard({ tab }: any) {
           <div className="my-5">
             <div className="flex w-full justify-between">
               <h6 className="mb-3 text-xl">Manage Courses</h6>
-              <button className="hover:underline">Add more</button>
+              <button className="hover:underline" onClick={handleCoursesSeeAllClick}>
+                {showAllCourses ? "Show Less" : "See All"}
+              </button>
             </div>
-            <div className="grid grid-cols-4 gap-3">
-              {tab?.content?.courses?.map((course: any, index: number) => (
-                <CourseCard key={course?.id} data={course} index={index} />
-              ))}
+            <div className="gap-3 flex overflow-y-auto p-2 pl-0 pt-0 no-scrollbar">
+              {coursesToShow.map((course: any, index: number) => (
+                  <CourseCard key={course?.id} data={course} index={index} />
+                ))}
             </div>
           </div>
           {/* Section 4 - Manage Staff  */}
           <div className="my-5">
             <div className="flex w-full justify-between">
               <h6 className="mb-3 text-xl">Manage Staff</h6>
-              <button className="hover:underline">See All</button>
+              <button className="hover:underline" onClick={handleStaffSeeAllClick}>
+              {showAllStaff ? "Show Less" : "See All"}</button>
             </div>
-            <Staff data={tab?.content?.staff} />
+            <Staff data={StaffToShow} />
           </div>
         </div>
 
         {/* Right Aside Section */}
-        <aside className="col-span-3 flex flex-col gap-3">
+        <aside className="col-span-3 flex flex-col gap-3 max-xl:col-span-12">
           {/* Sales Information  */}
           <SalesInformation data={tab?.content?.salesStatisticsChartData} />
           {/* Upcoming Tasks */}
@@ -196,6 +241,29 @@ export default function AdminDashboard({ tab }: any) {
         </aside>
       </div>
     </>
+  );
+}
+
+function Filter() {
+  const handleFilter = (item: string) => {
+    // handle filter logic here
+    console.log("Filter", item);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="flex items-center outline-none gap-1 rounded-full border-2 bg-white text-black px-4">
+        <BsFilterLeft className="text-lg" />
+        Filter <IoIosArrowDown />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {["Yearly", "Monthly", "Daily"].map((item, index) => (
+          <DropdownMenuItem key={index} onClick={() => handleFilter(item)}>
+            {item}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -243,7 +311,7 @@ function StudentEngagement({ data }: any) {
     strokeDasharray - (percentage / 100) * strokeDasharray;
 
   return (
-    <div className="col-span-4 flex flex-col justify-between rounded-2xl border-2 border-foreground/15 p-3">
+    <div className="col-span-4 flex flex-col justify-between rounded-2xl border-2 border-foreground/15 p-3 max-sm:mb-5">
       {/* title */}
       <div className="flex justify-between">
         <h6 className="text-lg font-normal">Student Engagement</h6>
@@ -414,7 +482,7 @@ function MonthlyProgressChart({ data }: any) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="name"
-            // angle={-45} // Rotate X-axis labels to an angle
+            angle={-45} // Rotate X-axis labels to an angle
             textAnchor="end" // Anchor X-axis labels at the end
             interval={0} // Display all labels without skipping
             tick={{ fontSize: 12 }} // Adjust font size of X-axis labels
@@ -550,7 +618,7 @@ function UpcomingTasks({ data }: any) {
     <div className="min-h-max rounded-2xl border-2 border-foreground/15 bg-gradient-to-tr from-purple-100 from-10% via-white to-purple-100 p-3">
       {/* Title  */}
       <div className="flex justify-between">
-        <h6 className="text-lg font-normal">Sales Information</h6>
+        <h6 className="text-lg font-normal">Upcoming Tasks</h6>
         <BsThreeDotsVertical className="cursor-pointer text-zinc-400" />
       </div>
       {/* Card 1  */}
@@ -689,12 +757,12 @@ function CourseCard({ data, index }: any) {
   return (
     <div
       className={classNames(
-        "relative rounded-xl border border-zinc-300 p-3 pt-5 shadow-md",
-        `bg-${selectedColor}-100 bg-opacity-40`,
+        "relative rounded-xl border border-zinc-300 p-3 pt-5 shadow-md min-w-[220px]",
+        `bg-${selectedColor}-100 bg-opacity-40`
       )}
     >
       {data?.isPopular && (
-        <p className="absolute left-0 top-0 w-min text-nowrap rounded-ee-2xl bg-pink-100 px-4 py-1 text-xs text-red-600">
+        <p className="absolute left-0 top-0 w-min text-nowrap rounded-ee-2xl rounded-ss-xl bg-pink-100 px-4 py-1 text-xs text-red-600">
           Popular Course
         </p>
       )}
@@ -703,15 +771,15 @@ function CourseCard({ data, index }: any) {
         <div
           className={classNames(
             "rounded-lg bg-white p-2 text-xl",
-            `text-${selectedColor}-500`,
+            `text-${selectedColor}-500`
           )}
         >
           {data?.icon}
         </div>
         <Button
           className={classNames(
-            "rounded-e-full rounded-s-full bg-white shadow-[0px_0px_2px_4px_#e2e8f0]",
-            `text-${selectedColor}-500`,
+            "rounded-e-full rounded-s-full bg-white shadow-[0px_0px_2px_4px_#e2e8f0] hover:bg-zinc-50",
+            `text-${selectedColor}-500`
           )}
         >
           Enroll Now
@@ -726,7 +794,7 @@ function CourseCard({ data, index }: any) {
         <p
           className={classNames(
             "flex items-center gap-2 font-medium",
-            `text-${selectedColor}-500`,
+            `text-${selectedColor}-500`
           )}
         >
           {" "}
@@ -738,7 +806,7 @@ function CourseCard({ data, index }: any) {
         <p
           className={classNames(
             "flex items-center gap-2 font-medium",
-            `text-${selectedColor}-500`,
+            `text-${selectedColor}-500`
           )}
         >
           {" "}
@@ -755,9 +823,9 @@ function CourseCard({ data, index }: any) {
 
 function Staff({ data }: any) {
   return (
-    <>
+    <div className="overflow-y-auto">
       {/* Table Head  */}
-      <div className="mb-5 grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-1 rounded-xl border border-zinc-300 bg-purple-200 px-4 py-2 shadow-md">
+      <div className="mb-5 min-w-[650px] grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-1 rounded-xl border border-zinc-300 bg-purple-200 px-4 py-2 shadow-md">
         <p className="col-span-3 text-purple-900">Course Name</p>
         <p className="col-span-3 text-center text-purple-900">Instructor</p>
         <p className="col-span-2 text-center text-purple-900">Progress</p>
@@ -768,7 +836,7 @@ function Staff({ data }: any) {
         <p className="col-span-1 text-end text-purple-900">Action</p>
       </div>
       {/* Table Rows  */}
-      <ul>
+      <ul className="min-w-[650px]">
         {data?.map((staff: any) => (
           <li
             key={staff?.id}
@@ -798,7 +866,7 @@ function Staff({ data }: any) {
                     ? "border-green-500 bg-green-100 text-green-600"
                     : staff.level === "medium"
                       ? "border-orange-500 bg-orange-100 text-orange-600"
-                      : "border-purple-500 bg-purple-100 text-purple-600"
+                      : "border -purple-500 bg-purple-100 text-purple-600"
                 }`}
               >
                 {staff?.level}
@@ -813,6 +881,6 @@ function Staff({ data }: any) {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }

@@ -100,8 +100,67 @@
   }
 }
 
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+   /* thin-scrollbar */
+    /* width */
+    .thin-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    /* Track */
+    .thin-scrollbar::-webkit-scrollbar-track {
+      background: #adadad;
+      border-radius: 5px;
+    }
+    
+    /* Handle */
+    .thin-scrollbar::-webkit-scrollbar-thumb {
+      background: #9c62af;
+      border-radius: 2px;
+    }
+    
+    /* Handle on hover */
+    .thin-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: transparent;
+    }
+
+}
+
 .custom-y-axis-label {
   transform: rotate(-90deg) translateY(25px) !important; /* Adjust rotation and translation as needed */
   transform-origin: 419px 135px !important; /* Adjust origin point for rotation */
   font: bold;
 }
+
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #adadad;
+    border-radius: 5px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #7a4c8a;
+    border-radius: 5px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

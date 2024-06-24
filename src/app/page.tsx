@@ -1,19 +1,39 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { dashboard } from "@/data/dashboard";
 import Image from "next/image";
 import Tab from "@/components/tabFilteration/Tab";
 import TabContent from "@/components/tabFilteration/TabContent";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { CiLogout, CiSettings } from "react-icons/ci";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from 'next/navigation'
 
 export default function Dashboard() {
+  const router = useRouter();
+
+  const searchParams = useSearchParams()
+ 
+  const tab = searchParams.get('tab')
+
   const [activeTab, setActiveTab] = useState("Dashboard");
+
+  useEffect(() => {
+    if (tab && dashboard.tabs.some((t) => t.label === tab)) {
+      setActiveTab(tab);
+      router.push(`/?tab=${tab}`);
+    }
+  }, [tab]);
+
+  const handleTabClick = (tabLabel:any) => {
+    setActiveTab(tabLabel);
+    router.push(`/?tab=${tabLabel}`);
+  };
 
   return (
     <section className="relative grid grid-cols-12">
-      <aside className="col-span-2 min-h-screen border-r-2 border-foreground/15">
-        {/* Logo  */}
+      <aside className="col-span-2 min-h-screen border-r-2 border-foreground/15 max-sm:hidden">
+        {/* Logo */}
         <div className="flex items-center gap-2 bg-foreground p-5">
           <div className="rounded-lg bg-white px-2 py-1">
             <Image
@@ -30,7 +50,7 @@ export default function Dashboard() {
         <Tab
           tabs={dashboard?.tabs}
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabClick}
         />
         <h6 className="m-5 mb-3 mt-16 text-sm">Preference</h6>
         <ul className="flex flex-col space-y-2 px-5 pb-2">
@@ -45,15 +65,15 @@ export default function Dashboard() {
           </li>
         </ul>
       </aside>
-      {/* Tab Content  */}
-      <main className="col-span-10 max-h-screen overflow-y-scroll p-10">
+      {/* Tab Content */}
+      <main className="col-span-10 max-h-screen overflow-y-scroll p-5 sm:p-10 max-sm:col-span-12">
         {dashboard?.tabs.map(
           (tab) =>
             tab?.label === activeTab && (
               <React.Fragment key={tab?.id}>
                 <TabContent activeTab={tab} />
               </React.Fragment>
-            ),
+            )
         )}
       </main>
     </section>
