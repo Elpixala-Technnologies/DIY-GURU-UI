@@ -1,0 +1,61 @@
+"use client";
+import React, { useState } from "react";
+import { dashboard } from "@/data/dashboard";
+import Image from "next/image";
+import Tab from "@/components/tabFilteration/Tab";
+import TabContent from "@/components/tabFilteration/TabContent";
+import { IoPersonCircleOutline } from "react-icons/io5";
+import { CiLogout, CiSettings } from "react-icons/ci";
+
+export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState("Dashboard");
+
+  return (
+    <section className="relative grid grid-cols-12">
+      <aside className="col-span-2 min-h-screen border-r-2 border-foreground/15">
+        {/* Logo  */}
+        <div className="flex items-center gap-2 bg-foreground p-5">
+          <div className="rounded-lg bg-white px-2 py-1">
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={100}
+              height={100}
+              className="h-7 w-7 object-contain"
+            />
+          </div>
+          <span className="text-2xl font-bold text-white">DIYguru.org</span>
+        </div>
+        {/* Tabs */}
+        <Tab
+          tabs={dashboard?.tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+        <h6 className="m-5 mb-3 mt-16 text-sm">Preference</h6>
+        <ul className="flex flex-col space-y-2 px-5 pb-2">
+          <li className="flex cursor-pointer items-center gap-2 px-5 py-1.5">
+            <IoPersonCircleOutline className="text-2xl" /> Profile
+          </li>
+          <li className="flex cursor-pointer items-center gap-2 px-5 py-1.5">
+            <CiSettings className="text-2xl" /> Settings
+          </li>
+          <li className="flex cursor-pointer items-center gap-2 px-5 py-1.5">
+            <CiLogout className="text-2xl" /> Log Out
+          </li>
+        </ul>
+      </aside>
+      {/* Tab Content  */}
+      <main className="col-span-10 max-h-screen overflow-y-scroll p-10">
+        {dashboard?.tabs.map(
+          (tab) =>
+            tab?.label === activeTab && (
+              <React.Fragment key={tab?.id}>
+                <TabContent activeTab={tab} />
+              </React.Fragment>
+            ),
+        )}
+      </main>
+    </section>
+  );
+}
