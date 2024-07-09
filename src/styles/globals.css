@@ -115,6 +115,7 @@
     /* width */
     .thin-scrollbar::-webkit-scrollbar {
       width: 6px;
+     
     }
     
     /* Track */
@@ -145,7 +146,9 @@
 
   /* width */
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
+   
+    height: 5px;
   }
   
   /* Track */
@@ -162,5 +165,91 @@
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #555555e8;
   }
+
+  @media(max-width: 640px){
+    ::-webkit-scrollbar {
+     height: 0px;
+    }
+  }
+
+
+ /* heat chart */
+
+ /*
+ * react-calendar-heatmap styles
+ *
+ * All of the styles in this file are optional and configurable!
+ * The github and gitlab color scales are provided for reference.
+ */
+
+.react-calendar-heatmap text {
+  font-size: 10px;
+  fill: #aaa;
+}
+
+.react-calendar-heatmap .react-calendar-heatmap-small-text {
+  font-size: 5px;
+}
+
+.react-calendar-heatmap rect:hover {
+  stroke: #700769eb;
+  stroke-width: 1px;
+}
+
+/*
+ * Default color scale
+ */
+
+.react-calendar-heatmap .color-empty {
+  fill: #eeeeee!important;
+}
+
+.react-calendar-heatmap .color-filled {
+  fill: #4d2c5e!important;
+}
+
+/*
+ * Github color scale
+ */
+
+.react-calendar-heatmap .color-github-0 {
+  fill: #eeeeee!important;
+}
+.react-calendar-heatmap .color-github-1 {
+  fill: #cda3e1!important;
+}
+.react-calendar-heatmap .color-github-2 {
+  fill: #b392c4!important;
+}
+.react-calendar-heatmap .color-github-3 {
+  fill: #775c84!important;
+}
+.react-calendar-heatmap .color-github-4 {
+  fill: #4d2c5e!important;
+}
+
+/*
+ * Gitlab color scale
+ */
+
+.react-calendar-heatmap .color-gitlab-0 {
+  fill: #ededed;
+}
+.react-calendar-heatmap .color-gitlab-1 {
+  fill: #acd5f2;
+}
+.react-calendar-heatmap .color-gitlab-2 {
+  fill: #7fa8d1;
+}
+.react-calendar-heatmap .color-gitlab-3 {
+  fill: #49729b;
+}
+.react-calendar-heatmap .color-gitlab-4 {
+  fill: #254e77;
+}
+.react-calendar-heatmap .color-scale-1 { fill: #e4b8fa!important; }
+.react-calendar-heatmap .color-scale-2 { fill: #b08bc2!important; }
+.react-calendar-heatmap .color-scale-3 { fill: #9061a8!important; }
+.react-calendar-heatmap .color-scale-4 { fill: #4d2c5e!important; }

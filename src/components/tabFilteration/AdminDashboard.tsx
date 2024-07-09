@@ -2,14 +2,13 @@
 import React, { useEffect, useState } from "react";
 import {
   FaGraduationCap,
-  FaRegCheckCircle,
   FaRegClipboard,
-  FaStar,
 } from "react-icons/fa";
 import { GiTeacher } from "react-icons/gi";
 import { PiStudentBold } from "react-icons/pi";
-import { RiBook2Line, RiSearchLine } from "react-icons/ri";
+import { RiSearchLine } from "react-icons/ri";
 import { TiTickOutline } from "react-icons/ti";
+import StudentEngagement from "../reusable/circulargraph";
 import {
   AreaChart,
   Area,
@@ -38,43 +37,36 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IoIosArrowDown, IoMdClose } from "react-icons/io";
-import { MdArrowOutward, MdOutlineFileDownload } from "react-icons/md";
-import { HiCursorClick } from "react-icons/hi";
+import { IoIosArrowDown } from "react-icons/io";
+
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 import { BsFilterLeft, BsThreeDotsVertical } from "react-icons/bs";
-import { SlBookOpen } from "react-icons/sl";
 import { Button } from "../ui/button";
 import classNames from "classnames";
-import { CiSettings } from "react-icons/ci";
-import Image from "next/image";
-import { Progress } from "@/components/ui/progress";
+
 import { DateRangePicker } from "../ui/date-range-picker";
 import { useRouter } from "next/navigation";
+import UpcomingTasks from "../reusable/upcomingTask";
+import Staff from "../reusable/staffListing";
 
-export default function AdminDashboard({ tab }: any) {
+export default function AdminDashboard({ tab, setMobileMenu }: any) {
   const router = useRouter();
   function handleSearch() {
     // search operation
   }
 
-  // Courses To Show 
+  // Courses To Show
   const [showAllCourses, setShowAllCourses] = useState(false);
 
   const handleCoursesSeeAllClick = () => {
     setShowAllCourses(!showAllCourses);
   };
 
-  const coursesToShow = showAllCourses ? tab?.content?.courses : tab?.content?.courses?.slice(0, 4);
+  const coursesToShow = showAllCourses
+    ? tab?.content?.courses
+    : tab?.content?.courses?.slice(0, 4);
 
-  // Staff To Show 
-  const [showAllStaff, setShowAllStaff] = useState(false);
-
-  const handleStaffSeeAllClick = () => {
-    setShowAllStaff(!showAllStaff);
-  };
-
-  const StaffToShow = showAllStaff ? tab?.content?.staff : tab?.content?.staff?.slice(0, 4);
+  // Staff To Show
 
   return (
     <>
@@ -82,9 +74,19 @@ export default function AdminDashboard({ tab }: any) {
       <div className="flex flex-wrap gap-5 w-full justify-between pb-6">
         {/* Left Side  */}
         <div>
-          {tab?.content?.title && (
-            <h2 className="text-xl">{tab?.content?.title}</h2>
-          )}
+          <div className="flex justify-between  items-center mb-2">
+            {tab?.content?.title && (
+              <h2 className="text-xl">{tab?.content?.title} </h2>
+            )}
+            <button
+              className="sm:hidden block rounded-lg py-1 px-2 font-bold bg-white shadow-xl"
+              onClick={() => {
+                setMobileMenu((pre: any) => !pre);
+              }}
+            >
+              DG
+            </button>
+          </div>
           {tab?.content?.subtitle && (
             <p className="text-sm text-zinc-600">{tab?.content?.subtitle}</p>
           )}
@@ -193,7 +195,14 @@ export default function AdminDashboard({ tab }: any) {
               {/* Title  */}
               <div className="flex w-full justify-between">
                 <h6 className="mb-3 text-xl">Report & Analytics</h6>
-                <button onClick={() => router.push(`/?tab=${encodeURIComponent('Report & Analytics')}`)} className="hover:underline">
+                <button
+                  onClick={() =>
+                    router.push(
+                      `/?tab=${encodeURIComponent("Report & Analytics")}`
+                    )
+                  }
+                  className="hover:underline"
+                >
                   See All
                 </button>
               </div>
@@ -211,25 +220,21 @@ export default function AdminDashboard({ tab }: any) {
           <div className="my-5">
             <div className="flex w-full justify-between">
               <h6 className="mb-3 text-xl">Manage Courses</h6>
-              <button className="hover:underline" onClick={handleCoursesSeeAllClick}>
+              <button
+                className="hover:underline"
+                onClick={handleCoursesSeeAllClick}
+              >
                 {showAllCourses ? "Show Less" : "See All"}
               </button>
             </div>
             <div className="gap-3 flex overflow-y-auto p-2 pl-0 pt-0 no-scrollbar">
               {coursesToShow.map((course: any, index: number) => (
-                  <CourseCard key={course?.id} data={course} index={index} />
-                ))}
+                <CourseCard key={course?.id} data={course} index={index} />
+              ))}
             </div>
           </div>
           {/* Section 4 - Manage Staff  */}
-          <div className="my-5">
-            <div className="flex w-full justify-between">
-              <h6 className="mb-3 text-xl">Manage Staff</h6>
-              <button className="hover:underline" onClick={handleStaffSeeAllClick}>
-              {showAllStaff ? "Show Less" : "See All"}</button>
-            </div>
-            <Staff data={StaffToShow} />
-          </div>
+          <Staff tab={tab} />
         </div>
 
         {/* Right Aside Section */}
@@ -287,131 +292,6 @@ function Card({ icon, text, value, iconBgColor, bgColor }: any) {
   );
 }
 
-function StudentEngagement({ data }: any) {
-  const [percentage, setPercentage] = useState(0);
-  const targetPercentage = 90;
-  const strokeDasharray = 599.74; // Circumference of the circle
-
-  useEffect(() => {
-    // Trigger the percentage increase animation
-    let currentPercentage = 0;
-    const interval = setInterval(() => {
-      if (currentPercentage < targetPercentage) {
-        currentPercentage += 1;
-        setPercentage(currentPercentage);
-      } else {
-        clearInterval(interval);
-      }
-    }, 16); // Adjust the interval time as needed for the animation speed
-
-    return () => clearInterval(interval);
-  }, [targetPercentage]);
-
-  const strokeDashoffset =
-    strokeDasharray - (percentage / 100) * strokeDasharray;
-
-  return (
-    <div className="col-span-4 flex flex-col justify-between rounded-2xl border-2 border-foreground/15 p-3 max-sm:mb-5">
-      {/* title */}
-      <div className="flex justify-between">
-        <h6 className="text-lg font-normal">Student Engagement</h6>
-        <MdArrowOutward className="text-xl text-zinc-900" />
-      </div>
-      {/* Progress bar */}
-      <div className="relative">
-        <svg
-          width="200"
-          height="200"
-          viewBox="-26.375 -26.375 263.75 263.75"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ transform: "rotate(-90deg)" }}
-        >
-          <circle
-            r="95.5"
-            cx="105.5"
-            cy="105.5"
-            fill="transparent"
-            stroke="#9d95ab"
-            strokeWidth="25"
-            strokeDasharray={strokeDasharray}
-            strokeDashoffset="0"
-          ></circle>
-          <circle
-            r="104.5"
-            cx="105.5"
-            cy="105.5"
-            stroke="#7a4d8b"
-            strokeWidth="40"
-            strokeLinecap="butt"
-            fill="transparent"
-            strokeDasharray={strokeDasharray}
-            strokeDashoffset={strokeDashoffset}
-            className="progress-circle"
-          ></circle>
-          <text
-            x="60px"
-            y="122px"
-            fill="#454459"
-            fontSize="49px"
-            fontWeight="bold"
-            style={{ transform: "rotate(90deg) translate(-6px, -216px)" }}
-          >
-            {percentage}%
-          </text>
-          <text
-            x="60px"
-            y="122px"
-            fill="#000000"
-            fontSize="16px"
-            fontWeight="normal"
-            style={{ transform: "rotate(90deg) translate(-3px, -196px)" }}
-          >
-            Active users
-          </text>
-        </svg>
-        <div className="absolute right-0 top-0 z-20 flex items-center gap-2 rounded-2xl bg-blue-500/20 p-2 backdrop-blur-sm backdrop-filter">
-          <HiCursorClick className="text-4xl text-yellow-500" />
-          <p className="flex flex-col">
-            <span className="text-2xl font-medium text-black">67%</span>
-            <span className="text-zinc-500">Interaction</span>
-          </p>
-        </div>
-        <div className="absolute right-0 top-24 z-20 flex items-center gap-2 rounded-2xl bg-blue-500/20 p-2 backdrop-blur-sm backdrop-filter">
-          <FaStar className="text-4xl text-yellow-500" />
-          <p className="flex flex-col">
-            <span className="text-2xl font-medium text-black">4.5/5</span>
-            <span className="text-zinc-500">Reviews</span>
-          </p>
-        </div>
-      </div>
-      {/* footer */}
-      <div className="relative bottom-0 left-0 flex justify-between">
-        <p className="flex flex-col items-center text-center text-xs">
-          <span className="flex items-center gap-2 text-base font-bold text-black">
-            <FaRegCheckCircle className="text-blue-500" />
-            78%
-          </span>
-          <span>Platform Usage</span>
-        </p>
-        <p className="flex flex-col items-center text-center text-xs">
-          <span className="flex items-center gap-2 text-base font-bold text-black">
-            <FaRegCheckCircle className="text-blue-500" />
-            80%
-          </span>
-          <span>Retention Rate</span>
-        </p>
-        <p className="flex flex-col items-center text-center text-xs">
-          <span className="flex items-center gap-2 text-base font-bold text-black">
-            <FaRegCheckCircle className="text-blue-500" />
-            90%
-          </span>
-          <span>Skill Mastery</span>
-        </p>
-      </div>
-    </div>
-  );
-}
 function MonthlyProgressChart({ data }: any) {
   const [time, setTime] = useState("Yearly");
   const [rateDirection, setRateDirection] = useState(true);
@@ -535,7 +415,7 @@ function SalesInformation({ data }: any) {
         <span className="text-green-600">Closed at:</span> 7th June, 2024
       </p>
       {/* Sales Information  */}
-      <div className="mb-3 flex gap-5">
+      <div className="mb-3 flex gap-4">
         <p className="flex flex-col">
           <span className="text-xs">Net sales</span>
           <span className="text-2xl font-medium text-black">₹ 25k</span>
@@ -613,142 +493,6 @@ function SalesInformation({ data }: any) {
   );
 }
 
-function UpcomingTasks({ data }: any) {
-  return (
-    <div className="min-h-max rounded-2xl border-2 border-foreground/15 bg-gradient-to-tr from-purple-100 from-10% via-white to-purple-100 p-3">
-      {/* Title  */}
-      <div className="flex justify-between">
-        <h6 className="text-lg font-normal">Upcoming Tasks</h6>
-        <BsThreeDotsVertical className="cursor-pointer text-zinc-400" />
-      </div>
-      {/* Card 1  */}
-      <div className="my-1 min-h-max rounded-2xl border-2 border-foreground/15 bg-white p-3">
-        {/* Card Title  */}
-        <div className="flex justify-between">
-          <h6 className="font-medium">Course Updates</h6>
-          <IoMdClose className="cursor-pointer text-zinc-500" />
-        </div>
-        {/* list  */}
-        <ul>
-          <li className="border-b border-foreground/15 p-2">
-            <div className="flex gap-2">
-              <SlBookOpen className="text-4xl text-black" />
-              <p className="flex flex-col">
-                <span className="text-sm text-foreground">
-                  Update Lesson 5 in "Advanced Woodworking"
-                </span>
-                <span className="text-xs text-green-600">
-                  Deadline: June 15
-                </span>
-              </p>
-            </div>
-            <div className="flex-end flex">
-              <button className="ml-auto rounded-e-full rounded-s-full bg-foreground px-2 py-1 text-sm text-white hover:bg-foreground/90">
-                Update
-              </button>
-            </div>
-          </li>
-          <li className="p-2">
-            <div className="flex gap-2">
-              <SlBookOpen className="text-4xl text-black" />
-              <p className="flex flex-col">
-                <span className="text-sm text-foreground">
-                  Update Lesson 5 in "Advanced Woodworking"
-                </span>
-                <span className="text-xs text-green-600">
-                  Deadline: June 15
-                </span>
-              </p>
-            </div>
-            <div className="flex-end flex">
-              <button className="ml-auto rounded-e-full rounded-s-full bg-foreground px-2 py-1 text-sm text-white hover:bg-foreground/90">
-                Update
-              </button>
-            </div>
-          </li>
-        </ul>
-        <ul></ul>
-      </div>
-      {/* Card 2  */}
-      <div className="my-1 min-h-max rounded-2xl border-2 border-foreground/15 bg-white p-3">
-        {/* Card Title  */}
-        <div className="flex justify-between">
-          <h6 className="font-medium">Assignments</h6>
-          <IoMdClose className="cursor-pointer text-zinc-500" />
-        </div>
-        {/* list  */}
-        <ul>
-          <li className="border-b border-foreground/15 p-2">
-            <div className="flex gap-2">
-              <RiBook2Line className="text-4xl text-black" />
-              <p className="flex flex-col">
-                <span className="text-sm text-foreground">
-                  Grade submissions for "DIY Electronics"
-                </span>
-                <span className="text-xs text-green-600">
-                  Deadline: June 15
-                </span>
-              </p>
-            </div>
-            <div className="flex-end flex">
-              <button className="ml-auto rounded-e-full rounded-s-full bg-foreground px-2 py-1 text-sm text-white hover:bg-foreground/90">
-                Grade Now
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-      {/* Card 3  */}
-      <div className="my-1 min-h-max rounded-2xl border-2 border-foreground/15 bg-white p-3">
-        {/* Card Title  */}
-        <div className="flex justify-between">
-          <h6 className="font-medium">Other Tasks</h6>
-          <IoMdClose className="cursor-pointer text-zinc-500" />
-        </div>
-        {/* list  */}
-        <ul>
-          <li className="border-b border-foreground/15 p-2">
-            <div className="flex gap-2">
-              <IoChatbubbleEllipsesOutline className="text-4xl text-black" />
-              <p className="flex flex-col">
-                <span className="text-sm text-foreground">
-                  Respond to student queries
-                </span>
-                <span className="text-xs text-green-600">
-                  Deadline: June 15
-                </span>
-              </p>
-            </div>
-            <div className="flex-end flex">
-              <button className="ml-auto rounded-e-full rounded-s-full bg-foreground px-2 py-1 text-sm text-white hover:bg-foreground/90">
-                Respond
-              </button>
-            </div>
-          </li>
-          <li className="border-b border-foreground/15 p-2">
-            <div className="flex gap-2">
-              <IoChatbubbleEllipsesOutline className="text-4xl text-black" />
-              <p className="flex flex-col">
-                <span className="text-sm text-foreground">
-                  Review course feedback and ratings
-                </span>
-                <span className="text-xs text-green-600">
-                  Deadline: June 15
-                </span>
-              </p>
-            </div>
-            <div className="flex-end flex">
-              <button className="ml-auto rounded-e-full rounded-s-full bg-foreground px-2 py-1 text-sm text-white hover:bg-foreground/90">
-                Respond
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
-}
-
 function CourseCard({ data, index }: any) {
   const colorArr = ["blue", "red", "green", "yellow", "purple"];
   const colorIndex = index % colorArr.length;
@@ -817,70 +561,6 @@ function CourseCard({ data, index }: any) {
           99
         </p>
       </div>
-    </div>
-  );
-}
-
-function Staff({ data }: any) {
-  return (
-    <div className="overflow-y-auto">
-      {/* Table Head  */}
-      <div className="mb-5 min-w-[650px] grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-1 rounded-xl border border-zinc-300 bg-purple-200 px-4 py-2 shadow-md">
-        <p className="col-span-3 text-purple-900">Course Name</p>
-        <p className="col-span-3 text-center text-purple-900">Instructor</p>
-        <p className="col-span-2 text-center text-purple-900">Progress</p>
-        <p className="col-span-2 text-center text-purple-900">Level</p>
-        <p className="col-span-3 text-center text-purple-900">
-          Next Assignment
-        </p>
-        <p className="col-span-1 text-end text-purple-900">Action</p>
-      </div>
-      {/* Table Rows  */}
-      <ul className="min-w-[650px]">
-        {data?.map((staff: any) => (
-          <li
-            key={staff?.id}
-            className="my-3 grid grid-cols-[repeat(14,_minmax(0,_1fr))] gap-1 rounded-xl border border-zinc-300 bg-white px-4 py-1 text-sm shadow-md"
-          >
-            <p className="col-span-3 my-auto font-medium text-zinc-500">
-              {staff?.courseName}
-            </p>
-            <p className="col-span-3 my-auto flex items-center gap-2 font-medium text-zinc-800">
-              <Image
-                src={staff?.instructor?.avatar?.url}
-                width={24}
-                height={24}
-                alt="avatar"
-                className="h-8 w-8 rounded-full"
-              />
-              {staff?.instructor?.name}
-            </p>
-            <div className="col-span-2 my-auto flex items-center gap-2 font-medium text-purple-900">
-              <Progress className="h-1.5" value={staff?.progress} />
-              <p className="text-zinc-500">{staff?.progress}%</p>
-            </div>
-            <div className="col-span-2 my-auto flex justify-center text-purple-900">
-              <div
-                className={`w-min rounded-md border-2 px-2 py-1 font-medium capitalize ${
-                  staff.level === "beginner"
-                    ? "border-green-500 bg-green-100 text-green-600"
-                    : staff.level === "medium"
-                      ? "border-orange-500 bg-orange-100 text-orange-600"
-                      : "border -purple-500 bg-purple-100 text-purple-600"
-                }`}
-              >
-                {staff?.level}
-              </div>
-            </div>
-            <p className="col-span-3 my-auto text-center text-zinc-700">
-              {staff?.nextAssignment}
-            </p>
-            <p className="col-span-1 my-auto flex justify-end text-end text-purple-900">
-              <CiSettings className="cursor-pointer text-3xl" />
-            </p>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
